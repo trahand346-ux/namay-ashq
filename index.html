@@ -2,6 +2,201 @@
 <html lang="ckb" dir="rtl">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>نامەیەکی تایبەت</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #2b0a18, #0d0509 75%);
+      color: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 105, 150, 0.25);
+      border-radius: 28px;
+      padding: 32px 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+    }
+
+    .hint {
+      font-size: 15px;
+      color: #ffd6e5;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .scanner-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      touch-action: none;
+    }
+
+    .ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.14);
+    }
+
+    svg.progress-ring {
+      position: absolute;
+      inset: 0;
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+    }
+
+    .progress-circle {
+      fill: none;
+      stroke: #ff3b7f;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 390;
+      stroke-dashoffset: 390;
+      filter: drop-shadow(0 0 8px rgba(255, 59, 127, 0.8));
+    }
+
+    .fingerprint-icon {
+      width: 78px;
+      height: 78px;
+      stroke: #ff85b0;
+      fill: none;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      transition: transform 0.2s ease, stroke 0.2s ease;
+    }
+
+    .scanner-wrap.active .fingerprint-icon {
+      transform: scale(1.08);
+      stroke: #ff3b7f;
+    }
+
+    .status {
+      font-size: 13px;
+      color: #d8a6b8;
+      min-height: 20px;
+    }
+
+    .message-box {
+      display: none;
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .message-box.show {
+      display: block;
+    }
+
+    .heart {
+      font-size: 52px;
+      margin-bottom: 12px;
+      animation: beat 1.2s infinite;
+    }
+
+    .msg-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ff7aa8;
+      margin: 0 0 12px;
+    }
+
+    .msg-body {
+      font-size: 16px;
+      line-height: 1.9;
+      color: #fff2f6;
+      margin: 0 0 24px;
+      white-space: pre-line;
+    }
+
+    .reset-btn {
+      background: rgba(255, 59, 127, 0.18);
+      border: 1px solid rgba(255, 122, 168, 0.45);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="scanView">
+      <p class="hint">پەنجەت لەسەر پەنجەمۆرەکە ڕابگرە<br>تا نامە تایبەتەکەت بۆ بکرێتەوە</p>
+
+      <div class="scanner-wrap" id="scanner">
+        <div class="ring"></div>
+        <svg class="progress-ring" viewBox="0 0 140 140">
+          <circle class="progress-circle" id="progressCircle" cx="70" cy="70" r="62"></circle>
+        </svg>
+        <svg class="fingerprint-icon" viewBox="0 0 64 64">
+          <path d="M20 26c0-6.6 5.4-12 12-12s12 5.4 12 12" />
+          <path d="M15 30c0-9.4 7.6-17 17-17s17 7.6 17 17v4c0 9-4 17-10 22" />
+          <path d="M24 27c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 6.5-2.5 12.5-7 17" />
+          <path d="M28 28c0-2.2 1.8-4 4-4s4 1.8 4 4v7c0 4.5-1.5 8.5-4.5 11.5" />
+          <path d="M16 38c0 7.5-3 14-8 18" />
+        </svg>
+      </div>
+
+      <div class="status" id="statusText">بۆ ماوەی ٢ چرکە ڕایبگرە</div>
+    </div>
+
+    <div class="message-box" id="messageView">
+      <div class="heart">❤️</div>
+      <h1 class="msg-title" id="msgTitle"></h1>
+      <p class="msg-body" id="msgBody"></p>
+      <button class="reset-btn" id="resetBtn">بینینەوەی دووبارە</button>
+    </div>
+  </div>
+
+  <script>
+    // لێرەدا نامەی خۆت بنووسە:
+    const messageTitle = "عەشقی من خۆشەویستم 💞💐";
+    const messageBody = "<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>نامەیەکی تایبەت</title>
   <style>
@@ -193,13 +388,202 @@
   <script>
     // لێرەدا نامەی خۆت بنووسە:
     const messageTitle = "خۆشەویستم ❤️";
-    const messageBody = "«بەڵام پێت وا نەبێت کە من تۆم هەر لەبەر جوانیەکەت، یان لەبەر چاوە بێ وێنەکانت و نیگای پڕ لە عیشق و هەست و سۆزت خۆشدەوێت»
-تۆم زیاتر لەبەر ‘دڵت’ خۆشەوێت، من تۆم لەبەر ئەوە خۆشدەوێت کە ‘باشیت’ چونکە تۆ کۆکراوەی جوانی جەستە و ڕۆحیت هەر لەبەر ئەوەشە من دەڵێم پیری ناتوانێت زەفەر بە جوانیت ببات.
-چونکە هەرچەندە جەستەت لەژێر فشاری تێپەڕینی ساڵەکاندا تێک بشکێت، ڕۆحی جوانی تۆ هەر گەشاوەتر ئەبێ، کەواتە بمخە نێو بازووەکانت لە باوەشتا جێمکەوە جێگەم بکەوە لەو شوێنەی کە هەنگاوی بەسەردا دەنێی.
-چەند باشە کە مرۆڤ ڕۆحێکی دۆزیبێتەوە تا لەناو هەڵچونی زریاندا بخرێتە نێو باوەشیەوە💙🔐 «بەڵام پێت وا نەبێت کە من تۆم هەر لەبەر جوانیەکەت، یان لەبەر چاوە بێ وێنەکانت و نیگای پڕ لە عیشق و هەست و سۆزت خۆشدەوێت»
-تۆم زیاتر لەبەر ‘دڵت’ خۆشەوێت، من تۆم لەبەر ئەوە خۆشدەوێت کە ‘باشیت’ چونکە تۆ کۆکراوەی جوانی جەستە و ڕۆحیت هەر لەبەر ئەوەشە من دەڵێم پیری ناتوانێت زەفەر بە جوانیت ببات.
-چونکە هەرچەندە جەستەت لەژێر فشاری تێپەڕینی ساڵەکاندا تێک بشکێت، ڕۆحی جوانی تۆ هەر گەشاوەتر ئەبێ، کەواتە بمخە نێو بازووەکانت لە باوەشتا جێمکەوە جێگەم بکەوە لەو شوێنەی کە هەنگاوی بەسەردا دەنێی.
-🔐💙🪬💍 خۆشەویستی پێویستی بە زمانێک نییە بۆ گەیاندن، پێویستی بە هەستێکە لێت بگات و ئارامت بکاتەوە لەکاتی توڕەییت، پێویستی بە دەستێکە کە لەکاتی بێتاقەتی و بێ هیواییت هیوات بداتەوە، لە جەنجاڵییەکانی ژیان دەرت بهێنێت و بتباتەوە کەناری دەریا🤴🏻🔐💙💍 🔐💙🪬💍 هەبوونی تۆ جوانترین بەشی ژیانمە.بیرت دەکەم و هەمیشە لەگەڵتم.";
+    const messageBody = "<!DOCTYPE html>
+<html lang="ckb" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>نامەیەکی تایبەت</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at top, #2b0a18, #0d0509 75%);
+      color: #fff;
+      font-family: system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 105, 150, 0.25);
+      border-radius: 28px;
+      padding: 32px 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    .hint {
+      font-size: 15px;
+      color: #ffd6e5;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .scanner-wrap {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 3px solid rgba(255, 255, 255, 0.14);
+    }
+
+    svg.progress-ring {
+      position: absolute;
+      inset: 0;
+      width: 140px;
+      height: 140px;
+      transform: rotate(-90deg);
+    }
+
+    .progress-circle {
+      fill: none;
+      stroke: #ff3b7f;
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 390;
+      stroke-dashoffset: 390;
+      transition: stroke-dashoffset 0.05s linear;
+      filter: drop-shadow(0 0 8px rgba(255, 59, 127, 0.8));
+    }
+
+    .fingerprint-icon {
+      width: 78px;
+      height: 78px;
+      stroke: #ff85b0;
+      fill: none;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      transition: transform 0.2s ease, stroke 0.2s ease;
+    }
+
+    .scanner-wrap.active .fingerprint-icon {
+      transform: scale(1.06);
+      stroke: #ff3b7f;
+    }
+
+    .status {
+      font-size: 13px;
+      color: #d8a6b8;
+      min-height: 20px;
+    }
+
+    .message-box {
+      display: none;
+      animation: fadeUp 0.7s ease forwards;
+    }
+
+    .message-box.show {
+      display: block;
+    }
+
+    .heart {
+      font-size: 52px;
+      margin-bottom: 12px;
+      animation: beat 1.2s infinite;
+    }
+
+    .msg-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #ff7aa8;
+      margin: 0 0 12px;
+    }
+
+    .msg-body {
+      font-size: 16px;
+      line-height: 1.9;
+      color: #fff2f6;
+      margin: 0 0 24px;
+      white-space: pre-line;
+    }
+
+    .reset-btn {
+      background: rgba(255, 59, 127, 0.18);
+      border: 1px solid rgba(255, 122, 168, 0.45);
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes beat {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div id="scanView">
+      <p class="hint">پەنجەت لەسەر پەنجەمۆرەکە ڕابگرە<br>تا نامە تایبەتەکەت بۆ بکرێتەوە</p>
+
+      <div class="scanner-wrap" id="scanner">
+        <div class="ring"></div>
+        <svg class="progress-ring" viewBox="0 0 140 140">
+          <circle class="progress-circle" id="progressCircle" cx="70" cy="70" r="62"></circle>
+        </svg>
+        <svg class="fingerprint-icon" viewBox="0 0 64 64">
+          <path d="M20 26c0-6.6 5.4-12 12-12s12 5.4 12 12" />
+          <path d="M15 30c0-9.4 7.6-17 17-17s17 7.6 17 17v4c0 9-4 17-10 22" />
+          <path d="M24 27c0-4.4 3.6-8 8-8s8 3.6 8 8v8c0 6.5-2.5 12.5-7 17" />
+          <path d="M28 28c0-2.2 1.8-4 4-4s4 1.8 4 4v7c0 4.5-1.5 8.5-4.5 11.5" />
+          <path d="M16 38c0 7.5-3 14-8 18" />
+        </svg>
+      </div>
+
+      <div class="status" id="statusText">بۆ ماوەی ٢ چرکە ڕایبگرە</div>
+    </div>
+
+    <div class="message-box" id="messageView">
+      <div class="heart">❤️</div>
+      <h1 class="msg-title" id="msgTitle"></h1>
+      <p class="msg-body" id="msgBody"></p>
+      <button class="reset-btn" id="resetBtn">بینینەوەی دووبارە</button>
+    </div>
+  </div>
+
+  <script>
+    // لێرەدا نامەی خۆت بنووسە:
+    const messageTitle = "خۆشەویستم ❤️";
+    const messageBody = "هەبوونی تۆ جوانترین بەشی ژیانمە.\nبیرت دەکەم و هەمیشە لەگەڵتم.";
 
     const scanner = document.getElementById("scanner");
     const progressCircle = document.getElementById("progressCircle");
@@ -283,6 +667,201 @@
     scanner.addEventListener("pointerdown", startHold);
     window.addEventListener("pointerup", stopHold);
     window.addEventListener("pointercancel", stopHold);
+
+    resetBtn.addEventListener("click", () => {
+      progress = 0;
+      setProgress(0);
+      statusText.textContent = "بۆ ماوەی ٢ چرکە ڕایبگرە";
+      messageView.classList.remove("show");
+      scanView.style.display = "block";
+    });
+  </script>
+</body>
+</html>
+ ‌هەبوونی تۆ جوانترین بەشی ژیانمە.بیرت دەکەم و هەمیشە لەگەڵتم.";
+
+    const scanner = document.getElementById("scanner");
+    const progressCircle = document.getElementById("progressCircle");
+    const statusText = document.getElementById("statusText");
+    const scanView = document.getElementById("scanView");
+    const messageView = document.getElementById("messageView");
+    const msgTitle = document.getElementById("msgTitle");
+    const msgBody = document.getElementById("msgBody");
+    const resetBtn = document.getElementById("resetBtn");
+
+    msgTitle.textContent = messageTitle;
+    msgBody.textContent = messageBody;
+
+    const circumference = 390;
+    const holdDuration = 2000; // ٢ چرکە (بە میلیچرکە)
+    let progress = 0;
+    let holding = false;
+    let lastTime = null;
+    let rafId = null;
+
+    function setProgress(value) {
+      const clamped = Math.max(0, Math.min(1, value));
+      progressCircle.style.strokeDashoffset = circumference * (1 - clamped);
+    }
+
+    function revealMessage() {
+      holding = false;
+      cancelAnimationFrame(rafId);
+      scanner.classList.remove("active");
+      scanView.style.display = "none";
+      messageView.classList.add("show");
+    }
+
+    function tick(timestamp) {
+      if (!lastTime) lastTime = timestamp;
+      const dt = timestamp - lastTime;
+      lastTime = timestamp;
+
+      if (holding) {
+        progress += dt / holdDuration;
+        statusText.textContent = `خەریکە دەکرێتەوە... ${Math.min(100, Math.round(progress * 100))}%`;
+        setProgress(progress);
+
+        if (progress >= 1) {
+          revealMessage();
+          return;
+        }
+      } else {
+        progress -= dt / 400;
+        setProgress(progress);
+        if (progress <= 0) {
+          progress = 0;
+          setProgress(0);
+          statusText.textContent = "بۆ ماوەی ٢ چرکە ڕایبگرە";
+          lastTime = null;
+          return;
+        }
+      }
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function startHold(e) {
+      e.preventDefault();
+      holding = true;
+      lastTime = performance.now();
+      scanner.classList.add("active");
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function stopHold() {
+      if (!holding) return;
+      holding = false;
+      scanner.classList.remove("active");
+      lastTime = performance.now();
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(tick);
+    }
+
+    scanner.addEventListener("pointerdown", startHold);
+    window.addEventListener("pointerup", stopHold);
+    window.addEventListener("pointercancel", stopHold);
+
+    resetBtn.addEventListener("click", () => {
+      progress = 0;
+      setProgress(0);
+      statusText.textContent = "بۆ ماوەی ٢ چرکە ڕایبگرە";
+      messageView.classList.remove("show");
+      scanView.style.display = "block";
+    });
+  </script>
+</body>
+</html>
+ هەبوونی تۆ جوانترین بەشی ژیانمە.لەگەڵتم.";
+
+    const scanner = document.getElementById("scanner");
+    const progressCircle = document.getElementById("progressCircle");
+    const statusText = document.getElementById("statusText");
+    const scanView = document.getElementById("scanView");
+    const messageView = document.getElementById("messageView");
+    const msgTitle = document.getElementById("msgTitle");
+    const msgBody = document.getElementById("msgBody");
+    const resetBtn = document.getElementById("resetBtn");
+
+    msgTitle.textContent = messageTitle;
+    msgBody.textContent = messageBody;
+
+    const circumference = 390;
+    const holdDuration = 2000;
+    let progress = 0;
+    let holding = false;
+    let lastTime = null;
+    let timerId = null;
+
+    function setProgress(value) {
+      const clamped = Math.max(0, Math.min(1, value));
+      progressCircle.style.strokeDashoffset = circumference * (1 - clamped);
+    }
+
+    function revealMessage() {
+      holding = false;
+      clearInterval(timerId);
+      timerId = null;
+      scanner.classList.remove("active");
+      scanView.style.display = "none";
+      messageView.classList.add("show");
+    }
+
+    function step() {
+      const now = Date.now();
+      if (!lastTime) lastTime = now;
+      const dt = now - lastTime;
+      lastTime = now;
+
+      if (holding) {
+        progress += dt / holdDuration;
+        statusText.textContent = `خەریکە دەکرێتەوە... ${Math.min(100, Math.round(progress * 100))}%`;
+        setProgress(progress);
+
+        if (progress >= 1) {
+          revealMessage();
+        }
+      } else {
+        progress -= dt / 350;
+        if (progress <= 0) {
+          progress = 0;
+          setProgress(0);
+          statusText.textContent = "بۆ ماوەی ٢ چرکە ڕایبگرە";
+          clearInterval(timerId);
+          timerId = null;
+          lastTime = null;
+        } else {
+          setProgress(progress);
+        }
+      }
+    }
+
+    function startHold(e) {
+      if (e && e.cancelable) e.preventDefault();
+      holding = true;
+      lastTime = Date.now();
+      scanner.classList.add("active");
+      if (!timerId) {
+        timerId = setInterval(step, 30);
+      }
+    }
+
+    function stopHold() {
+      if (!holding) return;
+      holding = false;
+      scanner.classList.remove("active");
+      lastTime = Date.now();
+      if (!timerId) {
+        timerId = setInterval(step, 30);
+      }
+    }
+
+    scanner.addEventListener("touchstart", startHold, { passive: false });
+    scanner.addEventListener("mousedown", startHold);
+    window.addEventListener("touchend", stopHold);
+    window.addEventListener("touchcancel", stopHold);
+    window.addEventListener("mouseup", stopHold);
 
     resetBtn.addEventListener("click", () => {
       progress = 0;
